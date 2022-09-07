@@ -2,9 +2,9 @@
 // creating module for our gameBoard to practice
 const gameBoard = (() => {
   var board =
-  ["X", "O", "",
+  ["", "", "",
     "", "", "",
-    "", "O", ""];
+    "", "", ""];
 
   // front functionality of gameboard
 
@@ -13,15 +13,19 @@ const gameBoard = (() => {
   function writeEntry(markType, i) {
     if (board[i] == "") {
     board[i] = markType; }
+
+    // once I have made a new Entry, I will make sure to let displayController know that display
+    // needs to be updated
+    displayController.updateBoardElement();
   }
 
 
   const boardElement = document.querySelector(".board");
 
-  function frontEndTouch(markType) {
+  function frontEndTouch(player) {
     for (let item of boardElement.children) {
       // var datapoint = e.target.getAttribute('data')
-      item.addEventListener('click', (e) => console.log(writeEntry(markType, e.target.getAttribute('data'))))
+      item.addEventListener('click', (e) => console.log(writeEntry(player.markType, e.target.getAttribute('data') -1)))
     };
   }
 
@@ -29,14 +33,6 @@ const gameBoard = (() => {
   return { board: board, frontEndTouch: frontEndTouch };
 })();
 
-// const gameBoardFront = ( () => {
-//   const boardElement = document.querySelector(".board");
-
-//   boardElement.forEach(addEventListener('click',(e) => console.log(e)));
-
-
-// }
-// )();
 
 // this will be a factory function as we will have multiple players.
 const Player = (markType) => {
@@ -52,7 +48,7 @@ const Player = (markType) => {
     displayController.updateBoardElement();
   }
 
-  return {moveOnBoard}
+  return {markType}
 };
 
 // another module for displaying the board
@@ -74,9 +70,18 @@ const displayController = (() => {
 
 // module for controlling the flow of the game
 const flowControl = (() => {
+// I will have two players, whoever plays first will have markType X, second one markType O
+player1 = Player('X');
+player2 = Player('O');
+
+// We are starting the game! I will let gameBoard know that currently player 1 has access to the board.
+gameBoard.frontEndTouch(player1);
 
 })();
 
 
+player1 = Player('X');
+player2 = Player('O');
 
-displayController.updateBoardElement();
+// We are starting the game! I will let gameBoard know that currently player 1 has access to the board.
+gameBoard.frontEndTouch(player1);

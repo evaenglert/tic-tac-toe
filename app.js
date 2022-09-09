@@ -10,22 +10,49 @@ const gameBoard = (() => {
 
 
   // gameboard needs to check if move is possible
-  function writeEntry(markType, i) {
+  function writeEntry(player, i) {
     if (board[i] == "") {
-    board[i] = markType; }
+      board[i] = player.markType;
+      displayController.updateBoardElement();
+      // if (player === player1) {
+      //   flowControl.previousPlayer = player1;
+      // }
+      // else { flowControl.previousPlayer = player2}
+      flowControl.switchPlayer(player);
+
+
+    }
 
     // once I have made a new Entry, I will make sure to let displayController know that display
     // needs to be updated
-    displayController.updateBoardElement();
+
+    // after this is done, also let the control flow know that it is now the other player's turn
+
   }
 
 
   const boardElement = document.querySelector(".board");
 
   function frontEndTouch(player) {
+    console.log("This is what goes into fronEndTouch");
+    console.log(player.markType);
+    console.log("This is what is stored in previousPlayer");
+    console.log(flowControl.previousPlayer);
     for (let item of boardElement.children) {
       // var datapoint = e.target.getAttribute('data')
-      item.addEventListener('click', (e) => console.log(writeEntry(player.markType, e.target.getAttribute('data') -1)))
+
+      if (player === player1) {
+        console.log("If is called");
+        item.removeEventListener('click', (e) => writeEntry(player2, e.target.getAttribute('data') - 1))
+        item.addEventListener('click', (e) => writeEntry(player1, e.target.getAttribute('data') - 1))
+
+      }
+      else {
+        console.log("Else is called");
+        item.removeEventListener('click', (e) => writeEntry(player1, e.target.getAttribute('data') - 1))
+        item.addEventListener('click', (e) => writeEntry(player2, e.target.getAttribute('data') - 1))
+
+      }
     };
   }
 
@@ -56,7 +83,6 @@ const displayController = (() => {
   const boardElement = document.querySelector(".board");
 
   function updateBoardElement() {
-    console.log(boardElement);
 
 
   for (var i=0; i < boardElement.children.length; i++) {
@@ -74,9 +100,25 @@ const flowControl = (() => {
 player1 = Player('X');
 player2 = Player('O');
 
-// We are starting the game! I will let gameBoard know that currently player 1 has access to the board.
-gameBoard.frontEndTouch(player1);
+var previousPlayer;
 
+// We are starting the game! I will let gameBoard know that currently player 1 has access to the board.
+
+function switchPlayer(currentPlayer) {
+
+  if (currentPlayer === player1) {
+    console.log("Player 2 is coming!!!!!!")
+    gameBoard.frontEndTouch(player2);
+
+  }
+  else {
+    console.log("Player 1 is coming!!!!!")
+    gameBoard.frontEndTouch(player1);
+
+  }
+}
+
+return {previousPlayer, switchPlayer}
 })();
 
 

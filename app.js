@@ -21,11 +21,47 @@ const flowControl = (() => {
     // front functionality of gameboard
     var player = player1;
 
+    function checkBoard() {
+      function checkThreeNumbers(arrayToCheck) {
+        endResult = {'X': 0, 'O': 0};
+        for (let i=0; i<3; i++) {endResult[arrayToCheck[i]] += 1;}
+        if (endResult['X'] == 3) { return 'X'}
+        else if (endResult['O'] == 3) {return 'O'}
+        else {return ''}
+      }
+
+
+      let possibleWinner = "";
+
+      //check rows
+      for (let i = 0; i < 3; i++) {
+        possibleWinner += checkThreeNumbers(board.slice(i*3, i*3 + 3));
+
+        // console.log(board.slice(i, i + 3));
+
+      }
+      //check columns
+      for (let i=0; i<3; i++) {
+        possibleWinner += checkThreeNumbers([board[0*3+i], board[1*3+i], board[2*3+i]]);
+      }
+
+      //check two diagonals
+      possibleWinner += checkThreeNumbers([board[0], board[4], board[8]]);
+      possibleWinner += checkThreeNumbers([board[2], board[4], board[6]]);
+
+
+      return possibleWinner
+    }
+
     // gameboard needs to check if move is possible
     function writeEntry(i) {
       if (board[i] == "") {
         board[i] = player.markType;
         displayController.updateBoardElement();
+
+        if (possibleWinner != '') {
+          flowControl.gameEnds();
+        }
 
         if (player.markType == player1.markType) {
           player = player2;
@@ -35,6 +71,7 @@ const flowControl = (() => {
       }
 
     }
+
 
     const boardElement = document.querySelector(".board");
 

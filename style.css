@@ -1,6 +1,42 @@
 
 * {
   border: 1px solid black;
+  margin: 0px;
+}
+
+html,
+body {
+  margin: 0;
+  height: 99%;
+}
+
+body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.header {
+  height: 60px;
+}
+
+.board-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer {
+  height: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.footer>p {
+  display: flex;
+  align-items: center;
 }
 
 .board {
@@ -9,10 +45,12 @@
   grid-template-rows: repeat(3, 1fr);
   height: 200px;
   width: 200px;
+  border: 1px solid black;
 }
 
 .entry {
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid black;
 }

@@ -3,6 +3,22 @@
 
 const flowControl = (() => {
 
+
+  // Method to call when someone wins or there is no more moves to make
+  function gameEnds() {
+    displayController.printResults();
+  }
+
+  function newGame() {
+    gameBoard.board =
+      ["", "", "",
+        "", "", "",
+        "", "", ""];
+    displayController.updateBoardElement();
+  }
+
+
+
   const Player = (markType) => {
     return { markType }
   };
@@ -58,9 +74,10 @@ const flowControl = (() => {
       if (board[i] == "") {
         board[i] = player.markType;
         displayController.updateBoardElement();
+        possibleWinner = checkBoard();
 
         if (possibleWinner != '') {
-          flowControl.gameEnds();
+          gameEnds();
         }
 
         if (player.markType == player1.markType) {
@@ -94,6 +111,7 @@ const flowControl = (() => {
   // another module for displaying the board
   const displayController = (() => {
     const boardElement = document.querySelector(".board");
+    const bodyElement = document.querySelector('body');
 
     function updateBoardElement() {
 
@@ -103,7 +121,14 @@ const flowControl = (() => {
       }
     }
 
-    return { updateBoardElement, boardElement };
+    function printResults() {
+      const resultElement = document.createElement('div');
+      resultElement.setAttribute('class', 'result-display');
+      resultElement.textContent = 'GAME OVER SOMEONE WON';
+      bodyElement.appendChild(resultElement);
+    }
+
+    return { updateBoardElement, printResults, boardElement };
 
   })();
 

@@ -1,19 +1,15 @@
 // this will be a factory function as we will have multiple players.
-//PROBLEM: board is editable from outside
 
 const flowControl = (() => {
 
 
   // Method to call when someone wins or there is no more moves to make
-  function gameEnds() {
-    displayController.printResults();
+  function gameEnds(winner) {
+    displayController.gameOverPanelOpen(winner);
   }
 
   function newGame() {
-    gameBoard.board =
-      ["", "", "",
-        "", "", "",
-        "", "", ""];
+    gameBoard.emptyGameBoard()
     displayController.updateBoardElement();
   }
 
@@ -66,7 +62,22 @@ const flowControl = (() => {
       possibleWinner += checkThreeNumbers([board[2], board[4], board[6]]);
 
 
+      let filledEntries = 0;
+
+      for (i=0; i<9; i++) {
+        if(board[i] != "") {
+          filledEntries += 1;
+        }
+      }
+
+      if (possibleWinner == "") {
+        if (filledEntries == 9) {
+          possibleWinner = 'tie';
+        }
+      }
+
       return possibleWinner
+
     }
 
     // gameboard needs to check if move is possible
@@ -77,7 +88,7 @@ const flowControl = (() => {
         possibleWinner = checkBoard();
 
         if (possibleWinner != '') {
-          gameEnds();
+          gameEnds(possibleWinner);
         }
 
         if (player.markType == player1.markType) {
@@ -89,6 +100,11 @@ const flowControl = (() => {
 
     }
 
+    function emptyGameBoard() {
+      for (i=0; i<9; i++) {
+        board[i] = "";
+      }
+    }
 
     const boardElement = document.querySelector(".board");
 
@@ -103,7 +119,8 @@ const flowControl = (() => {
     }
 
 
-    return { board: board, frontEndTouch: frontEndTouch };
+    return {
+      board: board, frontEndTouch: frontEndTouch, emptyGameBoard: emptyGameBoard};
   })();
 
 
@@ -112,6 +129,7 @@ const flowControl = (() => {
   const displayController = (() => {
     const boardElement = document.querySelector(".board");
     const bodyElement = document.querySelector('body');
+
 
     function updateBoardElement() {
 
@@ -131,7 +149,7 @@ const flowControl = (() => {
     function gameStartPanelOpen() {
 
       const gamePanelElement = document.createElement('div');
-      gamePanelElement.setAttribute('class', 'new-game-panel');
+      gamePanelElement.setAttribute('class', 'panel');
       const gameButtonsElement = document.createElement('div');
       gameButtonsElement.setAttribute('class', 'game-buttons');
       const cancelButton = document.createElement('button');
@@ -155,18 +173,74 @@ const flowControl = (() => {
     }
 
   function gameStartPanelClose() {
+    newGame();
     gameBoard.frontEndTouch();
-    const gamePanelElement = document.querySelector('.new-game-panel');
-    // startButton.removeEventListener('click', gameStartPanelClose);
+    const gamePanelElement = document.querySelector('.panel');
+    playerVsPlayerButton.removeEventListener('click', gameStartPanelOpen);
     gamePanelElement.remove();
 
   }
 
 
+  function gameOverPanelOpen(winner) {
+
+      const gamePanelElement = document.createElement('div');
+      gamePanelElement.setAttribute('class', 'panel');
+      const gameButtonsElement = document.createElement('div');
+      gameButtonsElement.setAttribute('class', 'game-buttons');
+      const cancelButton = document.createElement('button');
+
+      const startButton = document.createElement('button');
+      startButton.textContent = 'New Game';
+      startButton.setAttribute('class', 'start');
+
+      const boardContent = document.querySelector('.board-content');
+      boardContent.appendChild(gamePanelElement);
+      if (winner == 'tie') {
+        gamePanelElement.textContent = 'It is a tie!';
+      }
+      else { gamePanelElement.textContent = 'Player with marker ' + winner + ' won!!!';}
+      gameButtonsElement.appendChild(startButton);
+      gamePanelElement.appendChild(gameButtonsElement);
+
+      startButton.addEventListener('click', gameStartPanelClose);
+
+    }
+
+    function featureNotSupportedPanelOpen() {
+
+      const gamePanelElement = document.createElement('div');
+      gamePanelElement.setAttribute('class', 'panel');
+      const gameButtonsElement = document.createElement('div');
+      gameButtonsElement.setAttribute('class', 'game-buttons');
+
+      const cancelButton = document.createElement('button');
+      cancelButton.textContent = 'Cancel';
+      cancelButton.setAttribute('class', 'cancel');
+
+      const boardContent = document.querySelector('.board-content');
+      gamePanelElement.textContent = 'This feature is not yet supported';
+      boardContent.appendChild(gamePanelElement);
+      gameButtonsElement.appendChild(cancelButton);
+      gamePanelElement.appendChild(gameButtonsElement);
+
+      cancelButton.addEventListener('click', featureNotSupportedPanelClose);
+
+    }
+
+    function featureNotSupportedPanelClose() {
+      const panelElement = document.querySelector('.panel');
+      panelElement.remove();
+    }
+
     playerVsPlayerButton = document.querySelector('.two-players-button');
     playerVsPlayerButton.addEventListener('click', gameStartPanelOpen);
 
-    return { updateBoardElement, printResults, boardElement };
+    aiVsPlayerButton = document.querySelector('.ai-button');
+    aiVsPlayerButton.addEventListener('click', featureNotSupportedPanelOpen);
+
+    return {
+      updateBoardElement, printResults, gameOverPanelOpen, boardElement };
 
   })();
 

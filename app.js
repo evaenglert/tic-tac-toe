@@ -128,11 +128,54 @@ const flowControl = (() => {
       bodyElement.appendChild(resultElement);
     }
 
+    function gameStartPanelOpen() {
+
+      const gamePanelElement = document.createElement('div');
+      gamePanelElement.setAttribute('class', 'new-game-panel');
+      const gameButtonsElement = document.createElement('div');
+      gameButtonsElement.setAttribute('class', 'game-buttons');
+      const cancelButton = document.createElement('button');
+      cancelButton.textContent = 'Cancel';
+      cancelButton.setAttribute('class', 'cancel');
+
+      const startButton = document.createElement('button');
+      startButton.textContent = 'Start';
+      startButton.setAttribute('class', 'start');
+
+      const boardContent = document.querySelector('.board-content');
+      boardContent.appendChild(gamePanelElement);
+      gamePanelElement.textContent = 'Enter the players names';
+      gameButtonsElement.appendChild(cancelButton);
+      gameButtonsElement.appendChild(startButton);
+      gamePanelElement.appendChild(gameButtonsElement);
+
+
+      startButton.addEventListener('click', gameStartPanelClose);
+
+    }
+
+  function gameStartPanelClose() {
+    gameBoard.frontEndTouch();
+    const gamePanelElement = document.querySelector('.new-game-panel');
+    // startButton.removeEventListener('click', gameStartPanelClose);
+    gamePanelElement.remove();
+
+  }
+
+
+    playerVsPlayerButton = document.querySelector('.two-players-button');
+    playerVsPlayerButton.addEventListener('click', gameStartPanelOpen);
+
     return { updateBoardElement, printResults, boardElement };
 
   })();
 
 
-  gameBoard.frontEndTouch();
+
+
+
+
   return {}
+
+
 })()

@@ -18,7 +18,16 @@ body {
 }
 
 .header {
-  height: 60px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.header>p {
+  display: flex;
+  align-items: center;
+
+  font-size: 60px;
 }
 
 .board-content {
@@ -28,8 +37,51 @@ body {
   align-items: center;
 }
 
+.settings {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 30px;
+
+}
+
+.settings>button {
+  font-size: 25px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: black;
+  color: white;
+  box-shadow: 5px 5px rgb(192, 192, 192);
+}
+
+.new-game-panel {
+  padding: 15px;
+  border-radius: 5px;
+  position: absolute;
+  background-color: white;
+  font-size: 30px;
+}
+
+.game-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.new-game-panel button {
+  font-size: 25px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+}
+
+.new-game-panel .cancel {
+  background-color: rgb(225, 225, 225);
+  color: black;
+}
+
 .footer {
-  height: 40px;
+  height: 50px;
   display: flex;
   justify-content: center;
 }
@@ -43,8 +95,8 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  height: 200px;
-  width: 200px;
+  height: 300px;
+  width: 300px;
   border: 1px solid black;
 }
 
@@ -53,4 +105,9 @@ body {
   justify-content: center;
   align-items: center;
   border: 1px solid black;
+}
+
+.main-content {
+  display: flex;
+  justify-content: space-around;
 }

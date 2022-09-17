@@ -129,6 +129,8 @@ const flowControl = (() => {
   const displayController = (() => {
     const boardElement = document.querySelector(".board");
     const bodyElement = document.querySelector('body');
+    const aiVsPlayerButton = document.querySelector('.ai-button');
+    const playerVsPlayerButton = document.querySelector('.two-players-button');
 
 
     function updateBoardElement() {
@@ -169,6 +171,8 @@ const flowControl = (() => {
 
 
       startButton.addEventListener('click', gameStartPanelClose);
+
+      this.style.backgroundColor = 'grey';
 
     }
 
@@ -226,17 +230,21 @@ const flowControl = (() => {
 
       cancelButton.addEventListener('click', featureNotSupportedPanelClose);
 
+      this.style.backgroundColor = 'grey';
+
     }
 
     function featureNotSupportedPanelClose() {
       const panelElement = document.querySelector('.panel');
       panelElement.remove();
+
+      aiVsPlayerButton.style.backgroundColor = 'black';
+
     }
 
-    playerVsPlayerButton = document.querySelector('.two-players-button');
+
     playerVsPlayerButton.addEventListener('click', gameStartPanelOpen);
 
-    aiVsPlayerButton = document.querySelector('.ai-button');
     aiVsPlayerButton.addEventListener('click', featureNotSupportedPanelOpen);
 
     return {

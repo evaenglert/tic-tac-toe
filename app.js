@@ -14,13 +14,18 @@ const flowControl = (() => {
   }
 
 
-// PLAYER FACTORY FINCTION
+
+// PLAYER FACTORY FUNCTION
   const Player = (markType) => {
     return { markType }
   };
 
   const player1 = Player('X');
   const player2 = Player('O');
+
+
+
+
 
 
 // GAMEBOARD MODULE
@@ -127,8 +132,9 @@ const flowControl = (() => {
 
 
           const current_board = board.slice();
+          console.log(current_board);
           best_move = minimax(current_board, player.markType)[1];
-
+          // console.log(minimax(current_board, player.markType)[1]);
           board[best_move] = player.markType;
 
           displayController.updateBoardElement();
@@ -327,32 +333,39 @@ const flowControl = (() => {
     }
 
     else if (player == 'X') {
-      value = -2;
+      let value = -2;
       best_move = moves[0];
-      for (i = 0; i < moves.length; i++) {
+      for (let i = 0; i < moves.length; i++) {
         // board + moves[i]
         board_added_move = board_status;
         board_added_move[moves[i]] = 'X';
-        value = Math.max(value, minimax(board_added_move, 'O')[0]);
-        if (value < minimax(board_added_move, 'O')[0]) {
+        let new_score = minimax(board_added_move, 'O')[0];
+        if (value < new_score) {
           best_move = moves[i];
         }
+        value = Math.max(value, new_score);
+
       }
+      return [value, best_move]
     }
 
     else {
-      value = 2
-      for (i = 0; i < moves.length; i++) {
-        best_move = moves[0];
+      let value = 2;
+      best_move = moves[0];
+      for (let i = 0; i < moves.length; i++) {
         board_added_move = board_status;
         board_added_move[moves[i]] = 'O';
-        value = Math.min(value, minimax(board_added_move, 'X')[0]);
-        if (value > minimax(board_added_move, 'O')[0]) {
+
+        let new_score = minimax(board_added_move, 'X')[0];
+
+        if (value > new_score) {
           best_move = moves[i];
         }
+        value = Math.min(value, new_score);
       }
+      return [value, best_move]
     }
-    return [value, best_move]
+
   }
 
 

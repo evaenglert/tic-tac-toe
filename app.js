@@ -14,8 +14,6 @@ const flowControl = (() => {
   }
 
 
-
-
 // PLAYER FACTORY FINCTION
   const Player = (markType) => {
     return { markType }
@@ -34,6 +32,12 @@ const flowControl = (() => {
 
     // front functionality of gameboard
     var player = player1;
+
+    function emptyGameBoard() {
+      for (i = 0; i < 9; i++) {
+        board[i] = "";
+      }
+    }
 
     function checkBoard(lst_board) {
       function checkThreeNumbers(arrayToCheck) {
@@ -105,28 +109,63 @@ const flowControl = (() => {
 
     }
 
-    function emptyGameBoard() {
-      for (i=0; i<9; i++) {
-        board[i] = "";
+    function writeEntry_ai() {
+
+      i = this.getAttribute('data') - 1
+
+      if (board[i] == "") {
+        board[i] = player.markType;
+        displayController.updateBoardElement();
+        possibleWinner = checkBoard(board);
+
+        if (possibleWinner != '') {
+          gameEnds(possibleWinner);
+        }
+
+        if (player.markType == player1.markType) {
+          player = player2;
+
+
+          const current_board = board.slice();
+          best_move = minimax(current_board, player.markType)[1];
+
+          board[best_move] = player.markType;
+
+          displayController.updateBoardElement();
+          player = player1;
+        }
+        else { player = player1; }
+
       }
+
     }
 
     const boardElement = document.querySelector(".board");
 
     function frontEndTouch() {
-      // console.log(gameBoarplayer.markType);
 
       for (let item of boardElement.children) {
 
-        item.removeEventListener('click', writeEntry);
+       item.removeEventListener('click', writeEntry);
         item.addEventListener('click', writeEntry);
+
+      };
+    }
+
+    function frontEndTouch_ai() {
+
+      for (let item of boardElement.children) {
+
+        item.removeEventListener('click', writeEntry_ai);
+        item.addEventListener('click', writeEntry_ai);
 
       };
     }
 
 
     return {
-      board: board, frontEndTouch: frontEndTouch, emptyGameBoard: emptyGameBoard, writeEntry: writeEntry};
+      board: board, frontEndTouch: frontEndTouch, writeEntry: writeEntry, emptyGameBoard
+        : emptyGameBoard, frontEndTouch_ai: frontEndTouch_ai, checkBoard: checkBoard};
   })();
 
 
@@ -256,6 +295,9 @@ const flowControl = (() => {
           item.removeEventListener('click', gameBoard.writeEntry);
 
         };
+
+        newGame();
+        gameBoard.frontEndTouch_ai();
       }
 
 
@@ -268,41 +310,49 @@ const flowControl = (() => {
 
   })();
 
-  function minimax(board, player) {
+  function minimax(board_status, player) {
+
 
     let moves = [];
-    for (i = 0; i < board.length; i++) {
-      if (board[i] == "") {
+    for (i = 0; i < board_status.length; i++) {
+      if (board_status[i] == "") {
         moves.push(i);
       }
     }
 
-    if (gameBoard.checkBoard(board) != "") {
-      if (gameBoard.checkBoard(board) == 'X') {return 1}
-      else if (gameBoard.checkBoard(board) == 'O') {return -1}
-      else {return 0}
+    if (gameBoard.checkBoard(board_status) != "") {
+      if (gameBoard.checkBoard(board_status) == 'X') {return [1, -1]}
+      else if (gameBoard.checkBoard(board_status) == 'O') {return [-1, -1]}
+      else {return [0, -1]}
     }
 
     else if (player == 'X') {
       value = -2;
+      best_move = moves[0];
       for (i = 0; i < moves.length; i++) {
         // board + moves[i]
-        board_added_move = board;
+        board_added_move = board_status;
         board_added_move[moves[i]] = 'X';
-        value = Math.max(value, minimax(board_added_move, 'O'));
+        value = Math.max(value, minimax(board_added_move, 'O')[0]);
+        if (value < minimax(board_added_move, 'O')[0]) {
+          best_move = moves[i];
+        }
       }
     }
 
     else {
       value = 2
       for (i = 0; i < moves.length; i++) {
-
-        board_added_move = board;
+        best_move = moves[0];
+        board_added_move = board_status;
         board_added_move[moves[i]] = 'O';
-        value = Math.min(value, minimax(board_added_move, 'X'));
+        value = Math.min(value, minimax(board_added_move, 'X')[0]);
+        if (value > minimax(board_added_move, 'O')[0]) {
+          best_move = moves[i];
+        }
       }
     }
-    return value
+    return [value, best_move]
   }
 
 
@@ -312,7 +362,3 @@ const flowControl = (() => {
 
 
 })()
-
-
-
-// need to create the minimax algorithm for

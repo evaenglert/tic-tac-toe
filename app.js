@@ -193,14 +193,16 @@ const flowControl = (() => {
       }
     }
 
-    function printResults() {
-      const resultElement = document.createElement('div');
-      resultElement.setAttribute('class', 'result-display');
-      resultElement.textContent = 'GAME OVER SOMEONE WON';
-      bodyElement.appendChild(resultElement);
+    function disableClicks() {
+      for (let item of boardElement.children) {
+
+        item.removeEventListener('click', gameBoard.writeEntry);}
+      aiVsPlayerButton.removeEventListener('click', gameStartPanelOpen);
+      playerVsPlayerButton.removeEventListener('click', gameStartPanelOpen);
     }
 
     function gameStartPanelOpen() {
+      disableClicks();
 
       const gamePanelElement = document.createElement('div');
       gamePanelElement.setAttribute('class', 'panel');
@@ -221,16 +223,19 @@ const flowControl = (() => {
       gameButtonsElement.appendChild(startButton);
       gamePanelElement.appendChild(gameButtonsElement);
 
-
-      startButton.addEventListener('click', gameStartPanelClose);
+      mode = this.getAttribute('class')
+      startButton.addEventListener('click', () => gameStartPanelClose(mode));
 
       this.style.backgroundColor = 'grey';
 
     }
 
-    function gameStartPanelClose() {
+    function gameStartPanelClose(mode) {
       newGame();
-      gameBoard.frontEndTouch();
+
+      if (mode == 'two-players-button') { gameBoard.frontEndTouch(); }
+      else { gameBoard.frontEndTouch_ai(); }
+      // gameBoard.frontEndTouch();
       const gamePanelElement = document.querySelector('.panel');
       playerVsPlayerButton.removeEventListener('click', gameStartPanelOpen);
       gamePanelElement.remove();
@@ -263,56 +268,13 @@ const flowControl = (() => {
 
       }
 
-      function featureNotSupportedPanelOpen() {
-
-        const gamePanelElement = document.createElement('div');
-        gamePanelElement.setAttribute('class', 'panel');
-        const gameButtonsElement = document.createElement('div');
-        gameButtonsElement.setAttribute('class', 'game-buttons');
-
-        const cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Cancel';
-        cancelButton.setAttribute('class', 'cancel');
-
-        const boardContent = document.querySelector('.board-content');
-        gamePanelElement.textContent = 'This feature is not yet supported';
-        boardContent.appendChild(gamePanelElement);
-        gameButtonsElement.appendChild(cancelButton);
-        gamePanelElement.appendChild(gameButtonsElement);
-
-        cancelButton.addEventListener('click', featureNotSupportedPanelClose);
-
-        playerVsPlayerButton.addEventListener('click', gameStartPanelOpen);
-
-        playerVsPlayerButton.style.backgroundColor = 'black';
-        this.style.backgroundColor = 'grey';
-
-      }
-
-      function featureNotSupportedPanelClose() {
-        const panelElement = document.querySelector('.panel');
-        panelElement.remove();
-
-        aiVsPlayerButton.style.backgroundColor = 'black';
-
-        // just make sure when we do this, there is no way of starting a new game.
-        for (let item of boardElement.children) {
-
-          item.removeEventListener('click', gameBoard.writeEntry);
-
-        };
-
-        newGame();
-        gameBoard.frontEndTouch_ai();
-      }
-
 
     playerVsPlayerButton.addEventListener('click', gameStartPanelOpen);
 
-    aiVsPlayerButton.addEventListener('click', featureNotSupportedPanelOpen);
+    aiVsPlayerButton.addEventListener('click', gameStartPanelOpen);
 
     return {
-      updateBoardElement, printResults, gameOverPanelOpen, boardElement};
+      updateBoardElement, gameOverPanelOpen, boardElement};
 
   })();
 
@@ -367,8 +329,6 @@ const flowControl = (() => {
     }
 
   }
-
-
 
 
   return {}

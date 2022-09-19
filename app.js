@@ -35,7 +35,7 @@ const flowControl = (() => {
     // front functionality of gameboard
     var player = player1;
 
-    function checkBoard() {
+    function checkBoard(lst_board) {
       function checkThreeNumbers(arrayToCheck) {
         endResult = {'X': 0, 'O': 0};
         for (let i=0; i<3; i++) {endResult[arrayToCheck[i]] += 1;}
@@ -49,25 +49,25 @@ const flowControl = (() => {
 
       //check rows
       for (let i = 0; i < 3; i++) {
-        possibleWinner += checkThreeNumbers(board.slice(i*3, i*3 + 3));
+        possibleWinner += checkThreeNumbers(lst_board.slice(i*3, i*3 + 3));
 
         // console.log(board.slice(i, i + 3));
 
       }
       //check columns
       for (let i=0; i<3; i++) {
-        possibleWinner += checkThreeNumbers([board[0*3+i], board[1*3+i], board[2*3+i]]);
+        possibleWinner += checkThreeNumbers([lst_board[0 * 3 + i], lst_board[1 * 3 + i], lst_board[2*3+i]]);
       }
 
       //check two diagonals
-      possibleWinner += checkThreeNumbers([board[0], board[4], board[8]]);
-      possibleWinner += checkThreeNumbers([board[2], board[4], board[6]]);
+      possibleWinner += checkThreeNumbers([lst_board[0], lst_board[4], lst_board[8]]);
+      possibleWinner += checkThreeNumbers([lst_board[2], lst_board[4], lst_board[6]]);
 
 
       let filledEntries = 0;
 
       for (i=0; i<9; i++) {
-        if(board[i] != "") {
+        if (lst_board[i] != "") {
           filledEntries += 1;
         }
       }
@@ -90,7 +90,7 @@ const flowControl = (() => {
       if (board[i] == "") {
         board[i] = player.markType;
         displayController.updateBoardElement();
-        possibleWinner = checkBoard();
+        possibleWinner = checkBoard(board);
 
         if (possibleWinner != '') {
           gameEnds(possibleWinner);
@@ -267,6 +267,46 @@ const flowControl = (() => {
       updateBoardElement, printResults, gameOverPanelOpen, boardElement};
 
   })();
+
+  function minimax(board, player) {
+
+    let moves = [];
+    for (i = 0; i < board.length; i++) {
+      if (board[i] == "") {
+        moves.push(i);
+      }
+    }
+
+    if (gameBoard.checkBoard(board) != "") {
+      if (gameBoard.checkBoard(board) == 'X') {return 1}
+      else if (gameBoard.checkBoard(board) == 'O') {return -1}
+      else {return 0}
+    }
+
+    else if (player == 'X') {
+      value = -2;
+      for (i = 0; i < moves.length; i++) {
+        // board + moves[i]
+        board_added_move = board;
+        board_added_move[moves[i]] = 'X';
+        value = Math.max(value, minimax(board_added_move, 'O'));
+      }
+    }
+
+    else {
+      value = 2
+      for (i = 0; i < moves.length; i++) {
+
+        board_added_move = board;
+        board_added_move[moves[i]] = 'O';
+        value = Math.min(value, minimax(board_added_move, 'X'));
+      }
+    }
+    return value
+  }
+
+
+
 
   return {}
 

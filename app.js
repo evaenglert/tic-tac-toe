@@ -203,7 +203,8 @@ const flowControl = (() => {
     }
 
     function enableClicks() {
-
+      aiVsPlayerButton.addEventListener('click', gameStartPanelOpen);
+      playerVsPlayerButton.addEventListener('click', gameStartPanelOpen);
     }
 
     function gameStartPanelOpen() {
@@ -223,7 +224,7 @@ const flowControl = (() => {
 
       const boardContent = document.querySelector('.board-content');
       boardContent.appendChild(gamePanelElement);
-      gamePanelElement.textContent = 'Enter the players names';
+      gamePanelElement.textContent = 'Start new game in ' + this.textContent + ' mode?';
       gameButtonsElement.appendChild(cancelButton);
       gameButtonsElement.appendChild(startButton);
       gamePanelElement.appendChild(gameButtonsElement);
@@ -231,12 +232,21 @@ const flowControl = (() => {
       mode = this.getAttribute('class')
       startButton.addEventListener('click', () => gameStartPanelClose(mode));
 
-      this.style.backgroundColor = 'grey';
+
+      // this.style.backgroundColor = 'grey';
 
     }
 
     function gameStartPanelClose(mode) {
+      enableClicks();
       newGame();
+
+      const buttonElement = document.querySelector('.' + mode);
+      const settingsElement = document.querySelector('.settings');
+      for (let button of settingsElement.children) {
+        button.style.backgroundColor = 'black';
+      }
+      buttonElement.style.backgroundColor = 'grey';
 
       if (mode == 'two-players-button') { gameBoard.frontEndTouch(); }
       else { gameBoard.frontEndTouch_ai(); }

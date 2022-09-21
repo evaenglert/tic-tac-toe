@@ -42,6 +42,8 @@ const flowControl = (() => {
       for (i = 0; i < 9; i++) {
         board[i] = "";
       }
+
+      player = player1;
     }
 
     function checkBoard(lst_board) {
@@ -187,7 +189,6 @@ const flowControl = (() => {
 
     function updateBoardElement() {
 
-
       for (var i = 0; i < boardElement.children.length; i++) {
         boardElement.children[i].textContent = gameBoard.board[i];
       }
@@ -195,10 +196,14 @@ const flowControl = (() => {
 
     function disableClicks() {
       for (let item of boardElement.children) {
-
         item.removeEventListener('click', gameBoard.writeEntry);}
+
       aiVsPlayerButton.removeEventListener('click', gameStartPanelOpen);
       playerVsPlayerButton.removeEventListener('click', gameStartPanelOpen);
+    }
+
+    function enableClicks() {
+
     }
 
     function gameStartPanelOpen() {
@@ -235,9 +240,8 @@ const flowControl = (() => {
 
       if (mode == 'two-players-button') { gameBoard.frontEndTouch(); }
       else { gameBoard.frontEndTouch_ai(); }
-      // gameBoard.frontEndTouch();
+
       const gamePanelElement = document.querySelector('.panel');
-      playerVsPlayerButton.removeEventListener('click', gameStartPanelOpen);
       gamePanelElement.remove();
 
     }

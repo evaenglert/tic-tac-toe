@@ -248,6 +248,8 @@ const flowControl = (() => {
       }
       buttonElement.style.backgroundColor = 'grey';
 
+      gameBoard.mode = mode;
+
       if (mode == 'two-players-button') { gameBoard.frontEndTouch(); }
       else { gameBoard.frontEndTouch_ai(); }
 
@@ -258,27 +260,28 @@ const flowControl = (() => {
 
 
     function gameOverPanelOpen(winner) {
+      disableClicks();
 
-        const gamePanelElement = document.createElement('div');
-        gamePanelElement.setAttribute('class', 'panel');
-        const gameButtonsElement = document.createElement('div');
-        gameButtonsElement.setAttribute('class', 'game-buttons');
-        const cancelButton = document.createElement('button');
+      const gamePanelElement = document.createElement('div');
+      gamePanelElement.setAttribute('class', 'panel');
+      const gameButtonsElement = document.createElement('div');
+      gameButtonsElement.setAttribute('class', 'game-buttons');
+      const cancelButton = document.createElement('button');
 
-        const startButton = document.createElement('button');
-        startButton.textContent = 'New Game';
-        startButton.setAttribute('class', 'start');
+      const startButton = document.createElement('button');
+      startButton.textContent = 'New Game';
+      startButton.setAttribute('class', 'start');
 
-        const boardContent = document.querySelector('.board-content');
-        boardContent.appendChild(gamePanelElement);
-        if (winner == 'tie') {
-          gamePanelElement.textContent = 'It is a tie!';
-        }
-        else { gamePanelElement.textContent = 'Player with marker ' + winner + ' won!!!';}
-        gameButtonsElement.appendChild(startButton);
-        gamePanelElement.appendChild(gameButtonsElement);
+      const boardContent = document.querySelector('.board-content');
+      boardContent.appendChild(gamePanelElement);
+      if (winner == 'tie') {
+        gamePanelElement.textContent = 'It is a tie!';
+      }
+      else { gamePanelElement.textContent = 'Player with marker ' + winner + ' won!!!';}
+      gameButtonsElement.appendChild(startButton);
+      gamePanelElement.appendChild(gameButtonsElement);
 
-        startButton.addEventListener('click', gameStartPanelClose);
+      startButton.addEventListener('click', () => gameStartPanelClose(gameBoard.mode));
 
       }
 

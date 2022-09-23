@@ -303,7 +303,7 @@ const flowControl = (() => {
       best_move = moves[0];
       for (let i = 0; i < moves.length; i++) {
         // board + moves[i]
-        board_added_move = board_status;
+        board_added_move = [...board_status];
         board_added_move[moves[i]] = 'X';
         let new_score = minimax(board_added_move, 'O')[0];
         if (value < new_score) {
@@ -319,7 +319,7 @@ const flowControl = (() => {
       let value = 2;
       best_move = moves[0];
       for (let i = 0; i < moves.length; i++) {
-        board_added_move = board_status;
+        board_added_move = [...board_status];
         board_added_move[moves[i]] = 'O';
 
         let new_score = minimax(board_added_move, 'X')[0];

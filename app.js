@@ -110,7 +110,7 @@ const flowControl = (() => {
         }
       }
 
-      else {
+      else if (gameBoard.mode == 'ai-button') {
         if (board[i] == "") {
           board[i] = player.markType;
           displayController.updateBoardElement();
@@ -187,6 +187,10 @@ const flowControl = (() => {
     function enableClicks() {
       aiVsPlayerButton.addEventListener('click', gameStartPanelOpen);
       playerVsPlayerButton.addEventListener('click', gameStartPanelOpen);
+
+      for (let item of boardElement.children) {
+        item.addEventListener('click', gameBoard.writeEntry);
+      }
     }
 
     function gameStartPanelOpen() {
@@ -213,6 +217,7 @@ const flowControl = (() => {
 
       mode = this.getAttribute('class')
       startButton.addEventListener('click', () => gameStartPanelClose(mode));
+      cancelButton.addEventListener('click', cancelPanel);
 
     }
 
@@ -260,6 +265,11 @@ const flowControl = (() => {
 
       startButton.addEventListener('click', () => gameStartPanelClose(gameBoard.mode));
 
+      }
+
+      function cancelPanel() {
+        this.parentElement.parentElement.remove();
+        enableClicks();
       }
 
 

@@ -13,8 +13,6 @@ const flowControl = (() => {
     displayController.updateBoardElement();
   }
 
-
-
 // PLAYER FACTORY FUNCTION
   const Player = (markType) => {
     return { markType }
@@ -22,11 +20,6 @@ const flowControl = (() => {
 
   const player1 = Player('X');
   const player2 = Player('O');
-
-
-
-
-
 
 // GAMEBOARD MODULE
   const gameBoard = (() => {
@@ -96,55 +89,55 @@ const flowControl = (() => {
 
     function writeEntry() {
 
+      console.log(this);
       i = this.getAttribute('data') - 1
 
-      if (board[i] == "") {
-        board[i] = player.markType;
-        displayController.updateBoardElement();
-        possibleWinner = checkBoard(board);
-
-        if (possibleWinner != '') {
-          gameEnds(possibleWinner);
-        }
-
-        if (player.markType == player1.markType) {
-          player = player2;
-        }
-        else { player = player1; }
-
-      }
-
-    }
-
-    function writeEntry_ai() {
-
-      i = this.getAttribute('data') - 1
-
-      if (board[i] == "") {
-        board[i] = player.markType;
-        displayController.updateBoardElement();
-        possibleWinner = checkBoard(board);
-
-        if (possibleWinner != '') {
-          gameEnds(possibleWinner);
-        }
-
-        if (player.markType == player1.markType) {
-          player = player2;
-
-
-          const current_board = board.slice();
-          console.log(current_board);
-          best_move = minimax(current_board, player.markType)[1];
-          // console.log(minimax(current_board, player.markType)[1]);
-          board[best_move] = player.markType;
-
+      if (gameBoard.mode =='two-players-button') {
+        if (board[i] == "") {
+          board[i] = player.markType;
           displayController.updateBoardElement();
-          player = player1;
-        }
-        else { player = player1; }
+          possibleWinner = checkBoard(board);
 
+          if (possibleWinner != '') {
+            gameEnds(possibleWinner);
+          }
+
+          if (player.markType == player1.markType) {
+            player = player2;
+          }
+          else { player = player1; }
+
+        }
       }
+
+      else {
+        if (board[i] == "") {
+          board[i] = player.markType;
+          displayController.updateBoardElement();
+          possibleWinner = checkBoard(board);
+
+          if (possibleWinner != '') {
+            gameEnds(possibleWinner);
+          }
+
+          if (player.markType == player1.markType) {
+            player = player2;
+
+
+            const current_board = board.slice();
+            console.log(current_board);
+            best_move = minimax(current_board, player.markType)[1];
+            // console.log(minimax(current_board, player.markType)[1]);
+            board[best_move] = player.markType;
+
+            displayController.updateBoardElement();
+            player = player1;
+          }
+          else { player = player1; }
+
+        }
+      }
+
 
     }
 
@@ -160,20 +153,9 @@ const flowControl = (() => {
       };
     }
 
-    function frontEndTouch_ai() {
-
-      for (let item of boardElement.children) {
-
-        item.removeEventListener('click', writeEntry_ai);
-        item.addEventListener('click', writeEntry_ai);
-
-      };
-    }
-
-
     return {
       board: board, frontEndTouch: frontEndTouch, writeEntry: writeEntry, emptyGameBoard
-        : emptyGameBoard, frontEndTouch_ai: frontEndTouch_ai, checkBoard: checkBoard};
+        : emptyGameBoard, checkBoard: checkBoard};
   })();
 
 
@@ -232,9 +214,6 @@ const flowControl = (() => {
       mode = this.getAttribute('class')
       startButton.addEventListener('click', () => gameStartPanelClose(mode));
 
-
-      // this.style.backgroundColor = 'grey';
-
     }
 
     function gameStartPanelClose(mode) {
@@ -249,9 +228,7 @@ const flowControl = (() => {
       buttonElement.style.backgroundColor = 'grey';
 
       gameBoard.mode = mode;
-
-      if (mode == 'two-players-button') { gameBoard.frontEndTouch(); }
-      else { gameBoard.frontEndTouch_ai(); }
+      gameBoard.frontEndTouch();
 
       const gamePanelElement = document.querySelector('.panel');
       gamePanelElement.remove();

@@ -114,11 +114,6 @@ const flowControl = (() => {
         if (board[i] == "") {
           board[i] = player.markType;
           displayController.updateBoardElement();
-          possibleWinner = checkBoard(board);
-
-          if (possibleWinner != '') {
-            gameEnds(possibleWinner);
-          }
 
           if (player.markType == player1.markType) {
             player = player2;
@@ -127,8 +122,13 @@ const flowControl = (() => {
             const current_board = board.slice();
             console.log(current_board);
             best_move = minimax(current_board, player.markType)[1];
-            // console.log(minimax(current_board, player.markType)[1]);
+
             board[best_move] = player.markType;
+            possibleWinner = checkBoard(board);
+
+            if (possibleWinner != '') {
+              gameEnds(possibleWinner);
+            }
 
             displayController.updateBoardElement();
             player = player1;
